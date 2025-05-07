@@ -1,6 +1,5 @@
 package org.pronsky.subscriptionservice.service;
 
-import org.pronsky.subscriptionservice.service.dto.request.AddSubscriptionRequestDto;
 import org.pronsky.subscriptionservice.service.dto.request.CreateUserRequestDto;
 import org.pronsky.subscriptionservice.service.dto.request.UpdateUserRequestDto;
 import org.pronsky.subscriptionservice.service.dto.response.SubscriptionResponseDto;
@@ -10,7 +9,7 @@ import java.util.List;
 
 public interface UserService {
 
-    UserResponseDto createUser(CreateUserRequestDto userDto);
+    UserResponseDto registerUser(CreateUserRequestDto userDto);
 
     UserResponseDto getUserById(Long id);
 
@@ -18,7 +17,7 @@ public interface UserService {
 
     void deleteUser(Long id);
 
-    void addSubscriptionToTheUser(AddSubscriptionRequestDto requestDto);
+    void subscribeUser(Long userId, Long subscriptionId);
 
     List<SubscriptionResponseDto> getSubscriptionsByUserId(Long id);
 

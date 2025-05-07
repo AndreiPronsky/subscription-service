@@ -3,12 +3,12 @@ package org.pronsky.subscriptionservice.web.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.pronsky.subscriptionservice.service.UserService;
-import org.pronsky.subscriptionservice.service.dto.request.AddSubscriptionRequestDto;
 import org.pronsky.subscriptionservice.service.dto.request.CreateUserRequestDto;
 import org.pronsky.subscriptionservice.service.dto.request.UpdateUserRequestDto;
 import org.pronsky.subscriptionservice.service.dto.response.SubscriptionResponseDto;
 import org.pronsky.subscriptionservice.service.dto.response.UserResponseDto;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,8 +30,8 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<Void> createUser(@RequestBody CreateUserRequestDto request) {
-        UserResponseDto createdUser = userService.createUser(request);
+    public ResponseEntity<Void> register(@RequestBody @Validated CreateUserRequestDto request) {
+        UserResponseDto createdUser = userService.registerUser(request);
 
         URI location = URI.create("/users/" + createdUser.getId());
         return ResponseEntity.created(location).build();
@@ -43,7 +43,7 @@ public class UserController {
     }
 
     @PutMapping
-    public ResponseEntity<UserResponseDto> updateUser(@RequestBody UpdateUserRequestDto userDto) {
+    public ResponseEntity<UserResponseDto> updateUser(@RequestBody @Validated UpdateUserRequestDto userDto) {
         return ResponseEntity.accepted().body(userService.updateUser(userDto));
     }
 
@@ -53,9 +53,9 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/subscriptions")
-    public ResponseEntity<Void> subscribe(@RequestBody AddSubscriptionRequestDto requestDto) {
-        userService.addSubscriptionToTheUser(requestDto);
+    @PostMapping("/{userId}/subscriptions/{subscriptionId}")
+    public ResponseEntity<Void> subscribe(@PathVariable Long userId, @PathVariable Long subscriptionId) {
+        userService.subscribeUser(userId, subscriptionId);
         return ResponseEntity.accepted().build();
     }
 
