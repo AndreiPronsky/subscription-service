@@ -11,8 +11,6 @@ import java.util.List;
 public class UserResponseDto {
 
     private Long id;
-
     private String username;
-
     private List<Subscription> subscriptions;
 }
