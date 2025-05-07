@@ -1,0 +1,28 @@
+services:
+  subscription-service:
+    build:
+      context: .
+    ports:
+      - "8080:8080"
+    environment:
+      POSTGRES_URL: jdbc:postgresql://db-subscription/subscription-db
+      POSTGRES_USERNAME: dbuser
+      POSTGRES_PASSWORD: dbpassword
+      SERVER_PORT: 8080
+    depends_on:
+      - db-subscription
+
+  db-subscription:
+    image: postgres:17.4
+    environment:
+      POSTGRES_DB: subscription-db
+      POSTGRES_USER: dbuser
+      POSTGRES_PASSWORD: dbpassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data_sub:/var/lib/postgresql/sub/data
+    restart: unless-stopped
+
+volumes:
+  pg_data_sub:

@@ -67,7 +67,6 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new EntityNotFoundException(String.format(USER_NOT_FOUND, userId)));
         user.getSubscriptions().add(subscriptionRepository.findById(subscriptionId)
                 .orElseThrow(() -> new EntityNotFoundException(String.format(SUBSCRIPTION_NOT_FOUND, subscriptionId))));
-
     }
 
     @Override
