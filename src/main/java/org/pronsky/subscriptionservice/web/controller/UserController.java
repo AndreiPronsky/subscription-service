@@ -1,5 +1,6 @@
 package org.pronsky.subscriptionservice.web.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.pronsky.subscriptionservice.service.UserService;
@@ -8,7 +9,6 @@ import org.pronsky.subscriptionservice.service.dto.request.UpdateUserRequestDto;
 import org.pronsky.subscriptionservice.service.dto.response.SubscriptionResponseDto;
 import org.pronsky.subscriptionservice.service.dto.response.UserResponseDto;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,9 +30,8 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<Void> register(@RequestBody @Validated CreateUserRequestDto request) {
+    public ResponseEntity<Void> register(@RequestBody @Valid CreateUserRequestDto request) {
         UserResponseDto createdUser = userService.registerUser(request);
-
         URI location = URI.create("/users/" + createdUser.getId());
         return ResponseEntity.created(location).build();
     }
@@ -43,11 +42,11 @@ public class UserController {
     }
 
     @PutMapping
-    public ResponseEntity<UserResponseDto> updateUser(@RequestBody @Validated UpdateUserRequestDto userDto) {
+    public ResponseEntity<UserResponseDto> updateUser(@RequestBody @Valid UpdateUserRequestDto userDto) {
         return ResponseEntity.accepted().body(userService.updateUser(userDto));
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
@@ -59,12 +58,12 @@ public class UserController {
         return ResponseEntity.accepted().build();
     }
 
-    @GetMapping("{id}/subscriptions")
+    @GetMapping("/{id}/subscriptions")
     public ResponseEntity<List<SubscriptionResponseDto>> getSubscriptionsByUserId(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getSubscriptionsByUserId(id));
     }
 
-    @DeleteMapping("{userId}/subscriptions/{subscriptionId}")
+    @DeleteMapping("/{userId}/subscriptions/{subscriptionId}")
     public ResponseEntity<Void> unsubscribe(@PathVariable Long userId, @PathVariable Long subscriptionId) {
         userService.unsubscribeUser(userId, subscriptionId);
         return ResponseEntity.noContent().build();
