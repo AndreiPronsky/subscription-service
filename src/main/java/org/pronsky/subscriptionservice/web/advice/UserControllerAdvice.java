@@ -1,8 +1,10 @@
 package org.pronsky.subscriptionservice.web.advice;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -12,13 +14,20 @@ public class UserControllerAdvice {
     private static final String INTERNAL_SERVER_ERROR_MESSAGE = "Something went wrong";
 
     @ExceptionHandler({EntityNotFoundException.class})
-    public ResponseEntity<String> handleNotFoundException(EntityNotFoundException e) {
+    public ResponseEntity<String> handleNotFound(EntityNotFoundException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler({RuntimeException.class})
-    public ResponseEntity<String> handleRuntimeException() {
+    public ResponseEntity<String> handleServerError() {
         return new ResponseEntity<>(INTERNAL_SERVER_ERROR_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler({
+            MethodArgumentNotValidException.class,
+            ConstraintViolationException.class
+    })
+    public ResponseEntity<String> handleBadRequest(ConstraintViolationException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
 }
