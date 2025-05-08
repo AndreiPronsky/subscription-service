@@ -31,6 +31,7 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<Void> register(@RequestBody @Valid CreateUserRequestDto request) {
+        log.info("Register request: {}", request);
         UserResponseDto createdUser = userService.registerUser(request);
         URI location = URI.create("/users/" + createdUser.getId());
         return ResponseEntity.created(location).build();
@@ -43,17 +44,20 @@ public class UserController {
 
     @PutMapping
     public ResponseEntity<UserResponseDto> updateUser(@RequestBody @Valid UpdateUserRequestDto userDto) {
+        log.info("Update user request: {}", userDto);
         return ResponseEntity.accepted().body(userService.updateUser(userDto));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        log.info("Delete user request: {}", id);
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{userId}/subscriptions/{subscriptionId}")
     public ResponseEntity<Void> subscribe(@PathVariable Long userId, @PathVariable Long subscriptionId) {
+        log.info("Subscribe request, userId: {}, subscriptionId: {}", userId, subscriptionId);
         userService.subscribeUser(userId, subscriptionId);
         return ResponseEntity.accepted().build();
     }
@@ -65,6 +69,7 @@ public class UserController {
 
     @DeleteMapping("/{userId}/subscriptions/{subscriptionId}")
     public ResponseEntity<Void> unsubscribe(@PathVariable Long userId, @PathVariable Long subscriptionId) {
+        log.info("Unsubscribe request, userId: {}, subscriptionId: {}", userId, subscriptionId);
         userService.unsubscribeUser(userId, subscriptionId);
         return ResponseEntity.noContent().build();
     }

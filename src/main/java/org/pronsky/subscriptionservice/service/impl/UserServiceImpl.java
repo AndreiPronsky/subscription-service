@@ -37,6 +37,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDto registerUser(CreateUserRequestDto userDto) {
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        log.info("Registering user: {}", userDto);
         User user = userRepository.save(userMapper.createUserRequestDtoToUser(userDto));
 
         return userMapper.userToUserResponseDto(user);
@@ -51,6 +52,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDto updateUser(UpdateUserRequestDto userDto) {
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        log.info("Updating user: {}", userDto);
         User user = userRepository.save(userMapper.updateUserRequestDtoToUser(userDto));
 
         return userMapper.userToUserResponseDto(user);
@@ -58,11 +60,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(Long id) {
+        log.info("Deleting user: {}", id);
         userRepository.deactivateById(id);
     }
 
     @Override
     public void subscribeUser(Long userId, Long subscriptionId) {
+        log.info("Subscribing user: {} for subscription: {}", userId, subscriptionId);
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException(String.format(USER_NOT_FOUND, userId)));
         user.getSubscriptions().add(subscriptionRepository.findById(subscriptionId)
@@ -80,6 +84,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void unsubscribeUser(Long userId, Long subscriptionId) {
+        log.info("Unsubscribing user: {}, for subscription: {}", userId, subscriptionId);
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException(String.format(USER_NOT_FOUND, userId)));
         user.getSubscriptions().remove(subscriptionRepository.findById(subscriptionId)

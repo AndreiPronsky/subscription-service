@@ -1,7 +1,9 @@
 package org.pronsky.subscriptionservice.service.impl;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.pronsky.subscriptionservice.data.entity.Subscription;
 import org.pronsky.subscriptionservice.data.repository.SubscriptionRepository;
 import org.pronsky.subscriptionservice.service.SubscriptionService;
 import org.pronsky.subscriptionservice.service.dto.response.SubscriptionResponseDto;
@@ -22,7 +24,11 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     @Override
     public List<SubscriptionResponseDto> getTopThreeSubscriptions() {
-        return subscriptionRepository.findTop3MostPopularSubscriptions().stream()
+        List<Subscription> subscriptions = subscriptionRepository.findTop3MostPopularSubscriptions();
+        if (subscriptions.isEmpty()) {
+            throw new EntityNotFoundException("Subscriptions not found");
+        }
+        return subscriptions.stream()
                 .map(subscriptionMapper::subscriptionToSubscriptionResponseDto)
                 .toList();
     }
